@@ -63,7 +63,10 @@ CLASS zcl_uam_logout_log_result DEFINITION
     METHODS update_checkpoint.
 ENDCLASS.
 
-CLASS zcl_uam_logout_log_result IMPLEMENTATION.
+
+
+CLASS ZCL_UAM_LOGOUT_LOG_RESULT IMPLEMENTATION.
+
 
   METHOD if_apj_dt_exec_object~get_parameters.
   ENDMETHOD.
@@ -75,9 +78,6 @@ CLASS zcl_uam_logout_log_result IMPLEMENTATION.
   ENDMETHOD.
 
 
-  """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-  """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-  """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
   METHOD create_checkpoint.
     SELECT SINGLE *
     FROM tvarvc
@@ -109,9 +109,7 @@ CLASS zcl_uam_logout_log_result IMPLEMENTATION.
     ENDIF.
   ENDMETHOD.
 
-  """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-  """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-  """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
   METHOD read_logout_checkpoint.
     DATA: lv_date TYPE dats,
           lv_time TYPE tims.
@@ -152,9 +150,7 @@ CLASS zcl_uam_logout_log_result IMPLEMENTATION.
     me->read_logout(  ).
   ENDMETHOD.
 
-  """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-  """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-  """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
   METHOD read_logout.
     SELECT slguser   AS username
            slgdattim AS time
@@ -180,9 +176,6 @@ CLASS zcl_uam_logout_log_result IMPLEMENTATION.
   ENDMETHOD.
 
 
-  """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-  """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-  """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
   METHOD update_logout_time.
     DATA: ls_oldest TYPE zuam_auth_log.
 
@@ -192,6 +185,7 @@ CLASS zcl_uam_logout_log_result IMPLEMENTATION.
       SELECT  *
       FROM zuam_auth_log
       WHERE username     = @ls_logout-username
+      AND logout_date  IS INITIAL
       AND logout_time  = '000000'
       AND login_result = 'SUCCESS'
       AND client       = @ls_logout-client
@@ -232,9 +226,6 @@ CLASS zcl_uam_logout_log_result IMPLEMENTATION.
   ENDMETHOD.
 
 
-  """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-  """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-  """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
   METHOD update_checkpoint.
     IF lv_max_time IS NOT INITIAL.
       UPDATE tvarvc
