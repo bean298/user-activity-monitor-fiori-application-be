@@ -1,0 +1,115 @@
+@Metadata.layer: #CORE
+@UI: {
+    headerInfo: {
+        typeName: 'User Authentication Log',
+        typeNamePlural: 'User Authentication Logs',
+        title: {
+            value: 'SessionId'
+        },
+        description: {
+            value: 'Username'
+        }
+    },
+    presentationVariant: [{
+        sortOrder: [{
+            by: 'LoginDate',
+            direction: #DESC
+        },
+        {
+            by: 'LoginTime',
+            direction: #DESC
+        },
+        {
+            by: 'Username',
+            direction: #DESC
+        }],
+        visualizations: [{
+            type: #AS_LINEITEM
+        }]
+    }]
+}
+
+annotate entity ZIR_AUTH_LOG with
+{
+  @UI.facet: [
+      { id: 'SessionId',
+        purpose: #STANDARD,
+        type: #IDENTIFICATION_REFERENCE,
+        label: 'User Authencation Log',
+        position: 10
+      },
+      {
+        id: 'Activity',
+        purpose: #STANDARD,
+        position: 20,
+        label: 'User Activity Log',
+        type: #LINEITEM_REFERENCE,
+        targetElement: '_Activity'
+      }
+  ]
+
+  @UI.lineItem: [{ position: 10 }]
+  @UI.identification: [{ position: 10 }]
+  SessionId;
+
+  @UI.lineItem: [{ position: 20 }]
+  @UI.selectionField: [{ position: 10 }]
+  @UI.identification: [{ position: 15 }]
+  @Consumption.valueHelpDefinition: [
+  { entity: { name: 'ZI_SEARCH_USERNAME', element: 'Username' } }
+  ]
+  Username;
+
+  @UI.lineItem: [{ position: 30, criticality: 'LoginResultCriticality' }]
+  @UI.identification: [{ position: 20, criticality: 'LoginResultCriticality' }]
+  @UI.selectionField: [{ position: 20 }]
+  @Consumption.valueHelpDefinition: [
+  { entity: { name: 'ZI_SEARCH_LOGIN_RESULT', element: 'LoginResult' } }
+  ]
+  LoginResult;
+
+  @UI.lineItem: [{ position: 40 }]
+  @UI.selectionField: [{ position: 30 }]
+  @UI.identification: [{ position: 30 }]
+  LoginDate;
+
+  @UI.lineItem: [{ position: 50 }]
+  @UI.identification: [{ position: 35 }]
+  LoginTime;
+
+  @UI.lineItem: [{ position: 60, criticality: 'EventCriticality' }]
+  @UI.identification: [{ position: 25, criticality: 'EventCriticality' }]
+  LoginMessage;
+
+  @UI.lineItem: [{ position: 70 }]
+  @UI.identification: [{ position: 55 }]
+  LogoutTime;
+
+  @UI.lineItem: [{ position: 80 }]
+  @UI.identification: [{ position: 50 }]
+  LogoutDate;
+
+  @UI.identification: [{ position: 80 }]
+  TerminalId;
+
+  @UI.identification: [{ position: 60, criticality: 'EventCriticality' }]
+  EventId;
+
+  @UI.hidden: true
+  EventCriticality;
+
+  @UI.hidden: true
+  LoginResultCriticality;
+
+  @UI.identification: [{ position: 45 }]
+  UserClient;
+
+  @UI.identification: [{ position: 65 }]
+  CreateAt;
+
+  @UI.identification: [{ position: 70 }]
+  CreateOn;
+
+  @UI.identification: [{ position: 75 }]
+  MailSent;
+}

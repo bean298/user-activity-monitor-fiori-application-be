@@ -1,0 +1,29 @@
+@Metadata.layer: #CORE
+
+
+annotate entity ZI_ACTIVITY_LOG with
+{
+  @UI.lineItem: [{ position: 10 }]
+  ActId;
+
+  @UI.lineItem: [{ position: 20 }]
+  Username;
+
+  @UI.lineItem: [{ position: 30, criticality: 'ActTypeCriticality' }]
+  ActType;
+
+  @UI.lineItem: [{ position: 40 }]
+  Tcode;
+
+  @UI.lineItem: [{ position: 50 }]
+  TCodeName;
+
+  @UI.lineItem: [{ position: 60 }]
+  ActTims;
+
+  @UI.lineItem: [{ position: 70, criticality: 'ActTypeCriticality' }]
+  MessageText;
+
+  @UI.hidden: true
+  ActTypeCriticality;
+}

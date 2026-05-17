@@ -1,0 +1,13 @@
+@EndUserText.label: 'Service Definition User Activity'
+define service ZSD_USER_ACTIVITY {
+  expose ZIR_AUTH_LOG as authenticate_data;
+  expose ZI_ACTIVITY_LOG as activity_data;
+  expose ZI_SEARCHHELP_USERNAME as searchhelp_username_data;
+  expose ZI_LOGIN_RESULT as login_result_data;
+  expose ZI_TCODE as tcode_data;
+  expose ZI_DUMP as dump_data;
+  expose ZI_SYSTEM_INFO as system_data;
+  expose ZI_USER_DETAIL as user_detail;
+  expose ZI_ACTIVITY_COUNT_PERDAY as activity_count_perday;
+  expose ZI_SEARCHHELP_TCODE as searchhelp_tcode_data;
+}

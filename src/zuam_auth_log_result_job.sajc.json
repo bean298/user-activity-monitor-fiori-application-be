@@ -1,0 +1,8 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Auth Log Result Job",
+    "originalLanguage": "en"
+  },
+  "className": "ZCL_UAM_AUTH_LOG_RESULT"
+}

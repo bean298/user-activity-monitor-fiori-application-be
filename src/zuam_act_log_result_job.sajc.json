@@ -1,0 +1,8 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Job Catalog for Activity Log Result",
+    "originalLanguage": "en"
+  },
+  "className": "ZCL_UAM_ACT_LOG_RESULT"
+}

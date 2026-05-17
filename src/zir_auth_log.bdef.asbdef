@@ -1,0 +1,26 @@
+unmanaged implementation in class zbp_ir_auth_log unique;
+strict ( 2 );
+
+define behavior for ZIR_AUTH_LOG alias UserAuthLog
+//persistent table ZUAM_AUTH_LOG
+lock master
+authorization master ( instance )
+//etag master <field_name>
+{
+  create;
+  update;
+//  delete;
+  association _Activity { create; }
+}
+
+define behavior for ZI_ACTIVITY_LOG alias UserAcivityLog
+//persistent table <???>
+lock dependent by _User
+authorization dependent by _User
+//etag master <field_name>
+{
+//  update;
+//  delete;
+  field ( readonly ) SessionId;
+  association _User;
+}

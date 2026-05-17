@@ -1,0 +1,8 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Logout Log Job",
+    "originalLanguage": "en"
+  },
+  "className": "ZCL_UAM_LOGOUT_LOG_RESULT"
+}

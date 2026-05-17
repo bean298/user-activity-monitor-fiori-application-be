@@ -1,0 +1,8 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Batchjob for alert email",
+    "originalLanguage": "en"
+  },
+  "catalogName": "ZUAM_ALERT_EMAIL_JOB"
+}

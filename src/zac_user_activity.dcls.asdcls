@@ -1,0 +1,39 @@
+@EndUserText.label: 'Access Control User Activityy'
+@MappingRole: true
+define role ZAC_USER_ACTIVITY {
+    grant select on ZIR_AUTH_LOG
+        where 
+            ( Username ) = aspect pfcg_auth(Z_UAM_LOG, Z_UAM_USER, ACTVT='03');
+            
+    grant select on ZI_ACTIVITY_LOG
+        where 
+            ( Username ) = aspect pfcg_auth(Z_UAM_LOG, Z_UAM_USER, ACTVT='03');
+            
+    grant select on ZI_SEARCHHELP_USERNAME
+        where 
+            ( Username ) = aspect pfcg_auth(Z_UAM_LOG, Z_UAM_USER, ACTVT='03');
+            
+    grant select on ZI_LOGIN_RESULT
+        where 
+            ( Username ) = aspect pfcg_auth(Z_UAM_LOG, Z_UAM_USER, ACTVT='03');
+            
+    grant select on ZI_TCODE
+        where 
+            ( Username ) = aspect pfcg_auth(Z_UAM_LOG, Z_UAM_USER, ACTVT='03');           
+
+    grant select on ZI_DUMP
+        where 
+            ( Username ) = aspect pfcg_auth(Z_UAM_LOG, Z_UAM_USER, ACTVT='03');
+            
+    grant select on ZI_USER_DETAIL
+        where 
+            ( Username ) = aspect pfcg_auth(Z_UAM_LOG, Z_UAM_USER, ACTVT='03');
+         
+    grant select on ZI_ACTIVITY_COUNT_PERDAY
+        where 
+            ( Username ) = aspect pfcg_auth(Z_UAM_LOG, Z_UAM_USER, ACTVT='03');
+            
+    grant select on ZI_SEARCHHELP_TCODE
+        where 
+            ( Username ) = aspect pfcg_auth(Z_UAM_LOG, Z_UAM_USER, ACTVT='03');   
+}

@@ -1,0 +1,194 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_MSAG" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <T100A>
+    <ARBGB>ZUAM_MSG</ARBGB>
+    <MASTERLANG>E</MASTERLANG>
+    <STEXT>Message Class</STEXT>
+   </T100A>
+   <T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZUAM_MSG</ARBGB>
+     <MSGNR>000</MSGNR>
+     <TEXT>Created ZAUM_LOGIN_FAIL_TIME in TVARVC</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZUAM_MSG</ARBGB>
+     <MSGNR>001</MSGNR>
+     <TEXT>ZAUM_LOGIN_FAIL_TIME already exists</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZUAM_MSG</ARBGB>
+     <MSGNR>002</MSGNR>
+     <TEXT>ZAUM_LOGIN_FAIL_TIME updated successfully at &amp;</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZUAM_MSG</ARBGB>
+     <MSGNR>003</MSGNR>
+     <TEXT>ZAUM_LOGIN_FAIL_TIME updated failed</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZUAM_MSG</ARBGB>
+     <MSGNR>004</MSGNR>
+     <TEXT>Created ZAUM_ACT_TIME in TVARVC</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZUAM_MSG</ARBGB>
+     <MSGNR>005</MSGNR>
+     <TEXT>ZAUM_ACT_TIME already exists</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZUAM_MSG</ARBGB>
+     <MSGNR>006</MSGNR>
+     <TEXT>ZAUM_ACT_TIME updated successfully at &amp;</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZUAM_MSG</ARBGB>
+     <MSGNR>007</MSGNR>
+     <TEXT>ZAUM_ACT_TIME updated failed</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZUAM_MSG</ARBGB>
+     <MSGNR>008</MSGNR>
+     <TEXT>ZAUM_LOGIN_FAIL_TIME already have value (&amp;)</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZUAM_MSG</ARBGB>
+     <MSGNR>009</MSGNR>
+     <TEXT>Update checkpoint successfully at &amp;</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZUAM_MSG</ARBGB>
+     <MSGNR>010</MSGNR>
+     <TEXT>Insert Login_Fail successfully</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZUAM_MSG</ARBGB>
+     <MSGNR>011</MSGNR>
+     <TEXT>ZAUM_ACT_TIME already have value (&amp;)</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZUAM_MSG</ARBGB>
+     <MSGNR>012</MSGNR>
+     <TEXT>Created ZAUM_LOGOUT_TIME in TVARVC</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZUAM_MSG</ARBGB>
+     <MSGNR>013</MSGNR>
+     <TEXT>ZAUM_LOGOUT_TIME already exists</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZUAM_MSG</ARBGB>
+     <MSGNR>014</MSGNR>
+     <TEXT>ZAUM_LOGOUT_TIME already have value (&amp;)</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZUAM_MSG</ARBGB>
+     <MSGNR>015</MSGNR>
+     <TEXT>ZAUM_LOGOUT_TIME updated successfully at &amp;</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZUAM_MSG</ARBGB>
+     <MSGNR>016</MSGNR>
+     <TEXT>ZAUM_LOGOUT_TIME updated failed</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZUAM_MSG</ARBGB>
+     <MSGNR>017</MSGNR>
+     <TEXT>Updated logout time for user &amp;1 at &amp;2</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZUAM_MSG</ARBGB>
+     <MSGNR>018</MSGNR>
+     <TEXT>No users were locked</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZUAM_MSG</ARBGB>
+     <MSGNR>019</MSGNR>
+     <TEXT>Warning email sent for &amp;1 users</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZUAM_MSG</ARBGB>
+     <MSGNR>020</MSGNR>
+     <TEXT>No dump</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZUAM_MSG</ARBGB>
+     <MSGNR>021</MSGNR>
+     <TEXT>Created ZAUM_LOGIN_SUCCESS_TIME in TVARVC</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZUAM_MSG</ARBGB>
+     <MSGNR>022</MSGNR>
+     <TEXT>ZAUM_LOGIN_SUCCESS_TIME already exists</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZUAM_MSG</ARBGB>
+     <MSGNR>023</MSGNR>
+     <TEXT>Insert TVARVC failed</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZUAM_MSG</ARBGB>
+     <MSGNR>024</MSGNR>
+     <TEXT>ZAUM_LOGIN_SUCCESS_TIME already have value (&amp;)</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZUAM_MSG</ARBGB>
+     <MSGNR>025</MSGNR>
+     <TEXT>ZAUM_LOGIN_SUCCESS_TIME updated successfully at &amp;</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZUAM_MSG</ARBGB>
+     <MSGNR>026</MSGNR>
+     <TEXT>ZAUM_LOGIN_SUCCESS_TIME updated failed</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZUAM_MSG</ARBGB>
+     <MSGNR>027</MSGNR>
+     <TEXT>Missing data in madatory field</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZUAM_MSG</ARBGB>
+     <MSGNR>028</MSGNR>
+     <TEXT>Invalid logout time</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZUAM_MSG</ARBGB>
+     <MSGNR>029</MSGNR>
+     <TEXT>Critical Error: Database Insert Failed!</TEXT>
+    </T100>
+   </T100>
+  </asx:values>
+ </asx:abap>
+</abapGit>
