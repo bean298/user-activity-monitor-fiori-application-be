@@ -28,12 +28,6 @@ define view entity ZI_ACTIVITY_LOG
       message_text     as MessageText,
       mail_sent        as MailSent,
 
-      case act_type
-      when 'DUMP' then 1
-      when 'TCODE' then 3
-      else 0
-      end              as ActTypeCriticality,
-
       _User,
       _TCodeText
 }

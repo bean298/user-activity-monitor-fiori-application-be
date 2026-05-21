@@ -1,0 +1,7 @@
+unmanaged implementation in class zbp_i_user_detail unique;
+
+define behavior for ZI_USER_DETAIL alias user_detail
+{
+  action lockUser;
+  action unlockUser;
+}

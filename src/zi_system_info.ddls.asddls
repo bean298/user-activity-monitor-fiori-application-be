@@ -11,17 +11,11 @@
 @Metadata.ignorePropagatedAnnotations: true
 
 define view entity ZI_SYSTEM_INFO
-  as select from ZIR_AUTH_LOG
+  as select distinct from ZIR_AUTH_LOG
 {
-  key UserClient as userCient,
-  key SystemId
+  key UserClient as userCient
 }
 where
       UserClient is not null
-  and UserClient <> ''
-  and SystemId   is not null
-  and SystemId   <> ''
-
-group by
-  UserClient,
-  SystemId
+  and UserClient <> '3xx'
+  and UserClient <> '3XX'

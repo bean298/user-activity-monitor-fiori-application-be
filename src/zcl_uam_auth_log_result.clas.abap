@@ -33,6 +33,8 @@ CLASS zcl_uam_auth_log_result DEFINITION
              message  TYPE tsl1t-txt,
            END OF lty_t_buff_data.
 
+    TYPES tt_buff_data TYPE STANDARD TABLE OF lty_t_buff_data WITH DEFAULT KEY.
+
     TYPES: BEGIN OF ty_var,
              name        TYPE tvarvc-name,
              type        TYPE tvarvc-type,
@@ -81,6 +83,8 @@ CLASS zcl_uam_auth_log_result DEFINITION
     METHODS read_login_fail.
     METHODS create_login_fail_log.
     METHODS update_fail_checkpoint.
+
+    METHODS filter_by_scope CHANGING ct_log_data TYPE tt_buff_data.
 ENDCLASS.
 
 CLASS zcl_uam_auth_log_result IMPLEMENTATION.
@@ -227,6 +231,7 @@ CLASS zcl_uam_auth_log_result IMPLEMENTATION.
       ENDLOOP.
     ENDSELECT.
 
+    me->filter_by_scope( CHANGING ct_log_data = lt_log_success ).
     me->create_login_success_log( ).
     me->update_success_checkpoint( ).
   ENDMETHOD.
@@ -428,6 +433,7 @@ CLASS zcl_uam_auth_log_result IMPLEMENTATION.
       ENDLOOP.
     ENDSELECT.
 
+    me->filter_by_scope( CHANGING ct_log_data = lt_log_fail ).
     me->create_login_fail_log( ).
     me->update_fail_checkpoint( ).
   ENDMETHOD.
@@ -595,4 +601,41 @@ CLASS zcl_uam_auth_log_result IMPLEMENTATION.
       RETURN.
     ENDIF.
   ENDMETHOD.
+
+  """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+  """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+  """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+  METHOD filter_by_scope.
+    " Declare SAP Range tables to store dynamic filtering rules for Users and Clients
+    DATA: lr_user   TYPE RANGE OF rsau_buf_data-slguser,
+          lr_client TYPE RANGE OF rsau_buf_data-slgmand.
+
+    " Fetch dynamic scope configuration rules from the custom Rule Table (ZUAM_SCOPE_CFG)
+    SELECT filter_type, sel_sign, sel_opt, low, high
+      FROM zuam_scope_cfg
+      INTO TABLE @DATA(lt_rules).
+
+    " Populate the SAP Range structures based on the configuration rule type
+    LOOP AT lt_rules ASSIGNING FIELD-SYMBOL(<fs_rule>).
+      CASE <fs_rule>-filter_type.
+        WHEN 'USER'.
+          APPEND VALUE #( sign   = <fs_rule>-sel_sign
+                          option = <fs_rule>-sel_opt
+                          low    = <fs_rule>-low
+                          high   = <fs_rule>-high ) TO lr_user.
+        WHEN 'CLIENT'.
+          APPEND VALUE #( sign   = <fs_rule>-sel_sign
+                          option = <fs_rule>-sel_opt
+                          low    = <fs_rule>-low
+                          high   = <fs_rule>-high ) TO lr_client.
+      ENDCASE.
+    ENDLOOP.
+
+    " Filter the changing internal table in RAM before database processing
+    IF lr_user IS NOT INITIAL OR lr_client IS NOT INITIAL.
+      DELETE ct_log_data WHERE NOT ( username IN lr_user AND client IN lr_client ).
+    ENDIF.
+  ENDMETHOD.
 ENDCLASS.
+
+

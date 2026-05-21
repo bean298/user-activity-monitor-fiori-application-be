@@ -29,20 +29,6 @@ define root view entity ZIR_AUTH_LOG
       mail_sent     as MailSent,
       erzet         as CreateAt,
       erdat         as CreateOn,
-
-      case login_result
-      when 'SUCCESS' then 3  // Green
-      when 'FAIL'    then 1  // Red
-      else 0                 // Neutral
-      end           as LoginResultCriticality,
-
-      case event_id
-        when 'AU1' then 3
-        when 'AU2' then 1
-        when 'AUM' then 1
-        when 'BU1' then 1
-        else 0
-      end           as EventCriticality,
       
       _Activity
 }

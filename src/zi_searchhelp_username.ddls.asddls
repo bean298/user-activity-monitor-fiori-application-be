@@ -16,6 +16,5 @@ define view entity ZI_SEARCHHELP_USERNAME
 {
          @Search.defaultSearchElement: true
          @EndUserText.label: 'User Name'
-  key    Username,
-  key    LoginDate
+  key    Username
 }
