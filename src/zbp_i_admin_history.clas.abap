@@ -1,0 +1,5 @@
+CLASS zbp_i_admin_history DEFINITION PUBLIC ABSTRACT FINAL FOR BEHAVIOR OF zi_admin_history.
+ENDCLASS.
+
+CLASS zbp_i_admin_history IMPLEMENTATION.
+ENDCLASS.

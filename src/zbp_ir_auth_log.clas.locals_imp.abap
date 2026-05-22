@@ -21,11 +21,9 @@ CLASS lhc_UserAuthLog DEFINITION INHERITING FROM cl_abap_behavior_handler.
 
     METHODS cba_Activity FOR MODIFY
       IMPORTING entities_cba FOR CREATE UserAuthLog\_Activity.
-
 ENDCLASS.
 
 CLASS lhc_UserAuthLog IMPLEMENTATION.
-
   METHOD get_instance_authorizations.
   ENDMETHOD.
 
@@ -46,7 +44,6 @@ CLASS lhc_UserAuthLog IMPLEMENTATION.
 
   METHOD cba_Activity.
   ENDMETHOD.
-
 ENDCLASS.
 
 CLASS lhc_UserAcivityLog DEFINITION INHERITING FROM cl_abap_behavior_handler.

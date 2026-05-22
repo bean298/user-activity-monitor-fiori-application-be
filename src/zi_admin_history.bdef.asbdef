@@ -1,0 +1,25 @@
+unmanaged implementation in class zbp_i_admin_history unique;
+strict ( 2 );
+
+define behavior for ZI_ADMIN_HISTORY //alias <alias_name>
+//persistent table ZUAM_HISTORY
+lock master
+authorization master ( instance )
+//etag master <field_name>
+{
+  mapping for zuam_history corresponding
+  {
+    HistoryId = history_id;
+    ActionType = action_type;
+    Username = username;
+    ActionDate = action_date;
+    ActionTime = action_time;
+    ActionMessage = action_message;
+    Reason = reason;
+  }
+
+
+  create;
+  update;
+  delete;
+}

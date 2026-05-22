@@ -7,25 +7,6 @@ lock master
 authorization master ( instance )
 //etag master <field_name>
 {
-  mapping for ZUAM_AUTH_LOG corresponding
-  {
-    SessionId = session_id;
-    EventId = event_id;
-    Username = username;
-    LoginDate = login_date;
-    LoginTime = login_time;
-    LoginResult = login_result;
-    LoginMessage = login_message;
-    LogoutDate = logout_date;
-    LogoutTime = logout_time;
-    UserClient = client;
-    TerminalId = terminal_id;
-    SystemId = system_id;
-    MailSent = mail_sent;
-    CreateAt = erzet;
-    CreateOn = erdat;
-  }
-
   create;
   update;
   //  delete;
