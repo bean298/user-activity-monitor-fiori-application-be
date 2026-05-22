@@ -3,7 +3,8 @@
 {
 "FROM":
 [
-"ZI_ACTIVITY_LOG"
+"ZIR_AUTH_LOG",
+"ZI_USER_DETAIL"
 ],
 "ASSOCIATED":
 [],

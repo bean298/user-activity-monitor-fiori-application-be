@@ -13,9 +13,10 @@
 define view entity ZI_SEARCHHELP_TCODE
   as select distinct from ZI_ACTIVITY_LOG
 {
+      @Search.defaultSearchElement: true
+      @EndUserText.label: 'TCode'
   key Tcode,
-  key ActDate,
-  key Username
+      TCodeName
 }
 where
       Tcode is not null

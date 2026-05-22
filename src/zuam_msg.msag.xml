@@ -186,7 +186,7 @@
      <SPRSL>E</SPRSL>
      <ARBGB>ZUAM_MSG</ARBGB>
      <MSGNR>029</MSGNR>
-     <TEXT>Critical Error: Database Insert Failed!</TEXT>
+     <TEXT>Database Insert Failed!</TEXT>
     </T100>
    </T100>
   </asx:values>

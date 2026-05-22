@@ -1,0 +1,8 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Calculate Risk Score",
+    "originalLanguage": "en"
+  },
+  "className": "ZCL_UAM_RISK_CALCULATOR"
+}

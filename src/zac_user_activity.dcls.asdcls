@@ -13,27 +13,11 @@ define role ZAC_USER_ACTIVITY {
         where 
             ( Username ) = aspect pfcg_auth(Z_UAM_LOG, Z_UAM_USER, ACTVT='03');
             
-    grant select on ZI_LOGIN_RESULT
-        where 
-            ( Username ) = aspect pfcg_auth(Z_UAM_LOG, Z_UAM_USER, ACTVT='03');
-            
-    grant select on ZI_TCODE
-        where 
-            ( Username ) = aspect pfcg_auth(Z_UAM_LOG, Z_UAM_USER, ACTVT='03');           
-
-    grant select on ZI_DUMP
-        where 
-            ( Username ) = aspect pfcg_auth(Z_UAM_LOG, Z_UAM_USER, ACTVT='03');
-            
     grant select on ZI_USER_DETAIL
         where 
             ( Username ) = aspect pfcg_auth(Z_UAM_LOG, Z_UAM_USER, ACTVT='03');
-         
-    grant select on ZI_ACTIVITY_COUNT_PERDAY
-        where 
-            ( Username ) = aspect pfcg_auth(Z_UAM_LOG, Z_UAM_USER, ACTVT='03');
-            
-    grant select on ZI_SEARCHHELP_TCODE
-        where 
-            ( Username ) = aspect pfcg_auth(Z_UAM_LOG, Z_UAM_USER, ACTVT='03');   
+ 
+    grant select on ZI_DASHBOARD_ACTIVE_USERS
+       where 
+           ( Username ) = aspect pfcg_auth(Z_UAM_LOG, Z_UAM_USER, ACTVT='03');
 }

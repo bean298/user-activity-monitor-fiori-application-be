@@ -3,9 +3,9 @@
  <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
   <asx:values>
    <DDLS>
-    <DDLNAME>ZI_ACTIVITY_COUNT_PERDAY</DDLNAME>
+    <DDLNAME>ZI_DASHBOARD_LOGIN_RESULT</DDLNAME>
     <DDLANGUAGE>E</DDLANGUAGE>
-    <DDTEXT>CDS View - Activity Count Perday</DDTEXT>
+    <DDTEXT>CDS View - Dashboard Login Result</DDTEXT>
     <SOURCE_TYPE>W</SOURCE_TYPE>
    </DDLS>
   </asx:values>
