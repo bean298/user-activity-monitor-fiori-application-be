@@ -1,0 +1,16 @@
+managed implementation in class zbp_i_risk_alt unique;
+strict ( 2 );
+
+define behavior for ZI_RISK_ALT
+persistent table ZUAM_RISK_ALT
+lock master
+authorization master ( instance )
+{
+  mapping for ZUAM_RISK_ALT corresponding
+  {
+    Username  = username;
+    AlertDate = alert_date;
+    RiskScore = risk_score;
+    MailSent  = mail_sent;
+  }
+}

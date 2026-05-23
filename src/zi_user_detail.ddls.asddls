@@ -12,13 +12,15 @@
 
 
 define root view entity ZI_USER_DETAIL
-  as select from    ZI_SEARCHHELP_USERNAME as auth_log
+  as select from ZI_SEARCHHELP_USERNAME as auth_log
 
-    left outer join usr21                  as user    on auth_log.Username = user.bname
-    left outer join adrp                   as person  on user.persnumber = person.persnumber
-    left outer join adrc                   as address on user.addrnumber = address.addrnumber
-    left outer join usr02                  as logon   on auth_log.Username = logon.bname
-    left outer join adr6                   as email   on user.persnumber = email.persnumber
+    left outer join usr21              as user    on auth_log.Username = user.bname
+    left outer join adrp               as person  on user.persnumber   = person.persnumber
+    left outer join adrc               as address on user.addrnumber   = address.addrnumber
+    left outer join usr02              as logon   on auth_log.Username = logon.bname
+    left outer join adr6               as email   on user.persnumber   = email.persnumber
+    
+    left outer join ZI_USER_RISK_TOTAL     as risk    on  auth_log.Username = risk.Username
 
 {
   key auth_log.Username                   as Username,
@@ -35,7 +37,11 @@ define root view entity ZI_USER_DETAIL
       logon.class                         as UserGroup,
       logon.aname                         as Creator,
       logon.erdat                         as CreateOn,
-      min( email.smtp_addr )              as EmailAddress
+      min( email.smtp_addr )              as EmailAddress,
+      min( risk.TotalRiskScore )          as TotalRiskScore,
+      min( risk.MaxRiskScore )            as MaxRiskScore
+
+
 }
 group by
   auth_log.Username,

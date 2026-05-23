@@ -27,6 +27,10 @@ define view entity ZI_ACTIVITY_LOG
       act_tims         as ActTims,
       message_text     as MessageText,
       mail_sent        as MailSent,
+           
+      risk_score       as RiskScore,
+      severity         as Severity,
+      
 
       _User,
       _TCodeText

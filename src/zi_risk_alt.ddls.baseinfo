@@ -3,7 +3,7 @@
 {
 "FROM":
 [
-"ZIR_AUTH_LOG"
+"ZUAM_RISK_ALT"
 ],
 "ASSOCIATED":
 [],

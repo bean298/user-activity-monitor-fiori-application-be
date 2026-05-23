@@ -28,7 +28,7 @@ define root view entity ZIR_AUTH_LOG
       system_id     as SystemId,
       mail_sent     as MailSent,
       erzet         as CreateAt,
-      erdat         as CreateOn,
+      erdat         as CreateOn,    
       
       _Activity
 }

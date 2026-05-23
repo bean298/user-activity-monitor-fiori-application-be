@@ -1,0 +1,8 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Send Risk Alert Email",
+    "originalLanguage": "en"
+  },
+  "catalogName": "ZUAM_RISK_ALERT_JOB"
+}

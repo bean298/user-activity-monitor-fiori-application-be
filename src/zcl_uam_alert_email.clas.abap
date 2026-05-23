@@ -205,7 +205,7 @@ CLASS zcl_uam_alert_email IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD sent_user_mail.
+    METHOD sent_user_mail.
     "--- Send individual lock notification to each locked user ---"
     DATA: lo_bcs       TYPE REF TO cl_bcs,
           lo_document  TYPE REF TO cl_document_bcs,
@@ -218,6 +218,8 @@ CLASS zcl_uam_alert_email IMPLEMENTATION.
           lv_date       TYPE string.
 
     LOOP AT mt_auth_log INTO ms_auth_log.
+
+      CLEAR: lv_html, lt_html, lo_document, lo_bcs, lo_recipient.
 
       lv_user_email = get_user_email( ms_auth_log-username ).
 
@@ -269,6 +271,8 @@ CLASS zcl_uam_alert_email IMPLEMENTATION.
 
           lo_bcs->set_send_immediately( abap_true ).
           lo_bcs->send( ).
+
+          COMMIT WORK.
 
         CATCH cx_send_req_bcs
               cx_address_bcs
