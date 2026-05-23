@@ -4,5 +4,5 @@
     "description": "Batchjob for alert email",
     "originalLanguage": "en"
   },
-  "className": "ZCL_UAM_ALERT_EMAIL"
+  "className": "ZCL_UAM_USER_LOCK_EMAIL"
 }

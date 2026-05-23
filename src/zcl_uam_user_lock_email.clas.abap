@@ -1,5 +1,5 @@
 
-CLASS zcl_uam_alert_email DEFINITION
+CLASS zcl_uam_user_lock_email DEFINITION
   PUBLIC
   FINAL
   CREATE PUBLIC.
@@ -29,7 +29,7 @@ CLASS zcl_uam_alert_email DEFINITION
 ENDCLASS.
 
 
-CLASS zcl_uam_alert_email IMPLEMENTATION.
+CLASS zcl_uam_user_lock_email IMPLEMENTATION.
 
   METHOD if_apj_dt_exec_object~get_parameters.
     "--- Define admin email parameter for Application Job Catalog ---"
