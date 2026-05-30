@@ -1,0 +1,2 @@
+{"version":3,"file":"authenticate_dataMain.js","names":["sap","ui","define","TemplatePage","CustomPageDefinitions","actions","assertions"],"sources":["authenticate_dataMain-dbg.js"],"mappings":"AAAAA,IAAIC,GAAGC,OAAO,CAAC,4BAA6B,SAASC,GACjD,aAEA,IAAIC,EA+
+AwB,CACxBC,QAAS,CAAC,EACVC,WAAY,CAAC,GAGjB,OAAO,IAAIH,EACP,6DACAC,EAER","ignoreList":[]}                                                                                                                                                                       

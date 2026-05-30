@@ -68,7 +68,15 @@ CLASS zcl_uam_auth_log_result DEFINITION
     CONSTANTS: lc_type_param       TYPE tvarvc-type VALUE 'P',
                lc_cp_login_success TYPE tvarvc-name VALUE 'ZUAM_LOGIN_SUCCESS_TIME',
                lc_cp_login_fail    TYPE tvarvc-name VALUE 'ZUAM_LOGIN_FAIL_TIME',
-               lc_log_success_var  TYPE tvarvc-name VALUE 'A&0&P'.
+               lc_log_success_var  TYPE tvarvc-name VALUE 'A&0&P',
+               lc_placeholder_a    TYPE string VALUE '&A',
+               lc_placeholder_b    TYPE string VALUE '&B',
+               lc_placeholder_c    TYPE string VALUE '&C',
+               lc_event_au2        TYPE zuam_auth_log-event_id VALUE 'AU2',
+               lc_event_aum        TYPE zuam_auth_log-event_id VALUE 'AUM',
+               lc_event_bu1        TYPE zuam_auth_log-event_id VALUE 'BU1',
+               lc_filter_user      TYPE zuam_scope_cfg-filter_type VALUE 'USER',
+               lc_filter_client    TYPE zuam_scope_cfg-filter_type VALUE 'CLIENT'..
 
     "---------------------------------------------------------------
     " Methods
@@ -299,8 +307,8 @@ CLASS zcl_uam_auth_log_result IMPLEMENTATION.
           AND subid = @ls_log_success-id
           AND spras = 'E'.
 
-      REPLACE '&A' IN ls_auth_log_success-login_message WITH lv_type.
-      REPLACE '&C' IN ls_auth_log_success-login_message WITH lv_method.
+      REPLACE lc_placeholder_a IN ls_auth_log_success-login_message WITH lv_type.
+      REPLACE lc_placeholder_c IN ls_auth_log_success-login_message WITH lv_method.
 
       "---------------------------------------------------------------*
       " Validate mandatory fields
@@ -408,7 +416,7 @@ CLASS zcl_uam_auth_log_result IMPLEMENTATION.
            area,
            subid     AS id,
            slgmand   AS client,
-           slgmand   AS system,
+           sid       AS system,
            slgdattim AS time,
            sal_data  AS variable,
            slgltrm2  AS terminal
@@ -491,7 +499,7 @@ CLASS zcl_uam_auth_log_result IMPLEMENTATION.
       " Read login fail detail message
       "-------------------------------------------------------------------*
       "Wrong Password - Locked Account
-      IF ls_auth_fail_log-event_id = 'BU1' OR ls_auth_fail_log-event_id = 'AUM'.
+      IF ls_auth_fail_log-event_id = lc_event_bu1 OR ls_auth_fail_log-event_id = lc_event_aum.
 
         DATA: lv_var_client   TYPE string,
               lv_var_username TYPE string.
@@ -499,12 +507,12 @@ CLASS zcl_uam_auth_log_result IMPLEMENTATION.
         SPLIT ls_log_fail-variable AT '&' INTO lv_var_client lv_var_username.
 
         IF sy-subrc = 0.
-          REPLACE '&B' IN ls_auth_fail_log-login_message WITH lv_var_username.
-          REPLACE '&A' IN ls_auth_fail_log-login_message WITH lv_var_client.
+          REPLACE lc_placeholder_b IN ls_auth_fail_log-login_message WITH lv_var_username.
+          REPLACE lc_placeholder_a IN ls_auth_fail_log-login_message WITH lv_var_client.
         ENDIF.
 
         "Login Fail - Cause - Type - Method
-      ELSEIF ls_auth_fail_log-event_id = 'AU2'.
+      ELSEIF ls_auth_fail_log-event_id = lc_event_au2.
 
         DATA: lv_var_type   TYPE string,
               lv_var_method TYPE string,
@@ -531,9 +539,9 @@ CLASS zcl_uam_auth_log_result IMPLEMENTATION.
           WHERE id = @lv_var_cause.
 
         IF sy-subrc = 0.
-          REPLACE '&B' IN ls_auth_fail_log-login_message WITH lv_cause.
-          REPLACE '&A' IN ls_auth_fail_log-login_message WITH lv_type.
-          REPLACE '&C' IN ls_auth_fail_log-login_message WITH lv_method.
+          REPLACE lc_placeholder_b IN ls_auth_fail_log-login_message WITH lv_cause.
+          REPLACE lc_placeholder_a IN ls_auth_fail_log-login_message WITH lv_type.
+          REPLACE lc_placeholder_c IN ls_auth_fail_log-login_message WITH lv_method.
         ENDIF.
 
       ENDIF.
@@ -569,8 +577,8 @@ CLASS zcl_uam_auth_log_result IMPLEMENTATION.
         INTO @DATA(lv_user_status).
 
       IF lv_user_status IS NOT INITIAL
-      AND ls_auth_fail_log-event_id <> 'AUM'
-      AND ls_auth_fail_log-event_id <> 'BU1'.
+      AND ls_auth_fail_log-event_id <> lc_event_aum
+      AND ls_auth_fail_log-event_id <> lc_event_bu1.
         CONTINUE.
       ENDIF.
 
@@ -606,24 +614,27 @@ CLASS zcl_uam_auth_log_result IMPLEMENTATION.
   """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
   """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
   METHOD filter_by_scope.
-    " Declare SAP Range tables to store dynamic filtering rules for Users and Clients
     DATA: lr_user   TYPE RANGE OF rsau_buf_data-slguser,
           lr_client TYPE RANGE OF rsau_buf_data-slgmand.
 
-    " Fetch dynamic scope configuration rules from the custom Rule Table (ZUAM_SCOPE_CFG)
+    "---------------------------------------------------------------*
+    " Select data from ZUAM_SCOPE_CFG
+    "---------------------------------------------------------------*
     SELECT filter_type, sel_sign, sel_opt, low, high
       FROM zuam_scope_cfg
       INTO TABLE @DATA(lt_rules).
 
-    " Populate the SAP Range structures based on the configuration rule type
+    "---------------------------------------------------------------*
+    " Loop to get data into range table
+    "---------------------------------------------------------------*
     LOOP AT lt_rules ASSIGNING FIELD-SYMBOL(<fs_rule>).
       CASE <fs_rule>-filter_type.
-        WHEN 'USER'.
+        WHEN lc_filter_user.
           APPEND VALUE #( sign   = <fs_rule>-sel_sign
                           option = <fs_rule>-sel_opt
                           low    = <fs_rule>-low
                           high   = <fs_rule>-high ) TO lr_user.
-        WHEN 'CLIENT'.
+        WHEN lc_filter_client.
           APPEND VALUE #( sign   = <fs_rule>-sel_sign
                           option = <fs_rule>-sel_opt
                           low    = <fs_rule>-low
@@ -631,7 +642,9 @@ CLASS zcl_uam_auth_log_result IMPLEMENTATION.
       ENDCASE.
     ENDLOOP.
 
-    " Filter the changing internal table in RAM before database processing
+    "---------------------------------------------------------------*
+    " Delete record if it don't match with scope configuration
+    "---------------------------------------------------------------*
     IF lr_user IS NOT INITIAL OR lr_client IS NOT INITIAL.
       DELETE ct_log_data WHERE NOT ( username IN lr_user AND client IN lr_client ).
     ENDIF.

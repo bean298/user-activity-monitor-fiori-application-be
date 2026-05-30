@@ -1,0 +1,11 @@
+@EndUserText.label: 'Access Control'
+@MappingRole: true
+define role ZAC_ACT {
+    grant 
+        select
+            on
+                ZIR_AUTH_LOG
+                    where
+                        (Username) = aspect pfcg_auth(Z_UAM_LOG, Z_UAM_USER, ACTVT = '03');
+                        
+}

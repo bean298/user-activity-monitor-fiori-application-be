@@ -1,0 +1,3 @@
+{"version":3,"file":"FirstJourney.js","names":["sap","ui","define","opaTest","runner","journey","QUnit","module","Given","When","Then","iStartMyApp","onTheauthenticate_dataMain","iSeeThisPage","iTearDownMyApp","run"],"sources":["FirstJourney-dbg.js"],"ma+
+ppings":"AAAAA,IAAIC,GAAGC,OAAO,CACV,uBACA,yBACD,SAAUC,EAASC,GAClB,aAEA,SAASC,IACLC,MAAMC,OAAO,iBAEbJ,EAAQ,oBAAqB,SAAUK,EAAOC,EAAMC,GAChDF,EAAMG,cAEND,EAAKE,2BAA2BC,cAEpC,GAGAV,EAAQ,WAAY,SAAUK,EAAOC,EAAMC,GAEvCF,EAAMM,gBACV,EACJ,CAEAV,EAAOW,IAAI,CAACV,GA+
+ChB","ignoreList":[]}                                                                                                                                                                                                                                          

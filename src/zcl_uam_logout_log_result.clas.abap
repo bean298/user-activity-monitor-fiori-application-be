@@ -65,19 +65,24 @@ ENDCLASS.
 
 
 
-CLASS ZCL_UAM_LOGOUT_LOG_RESULT IMPLEMENTATION.
+CLASS zcl_uam_logout_log_result IMPLEMENTATION.
 
 
   METHOD if_apj_dt_exec_object~get_parameters.
   ENDMETHOD.
 
 
+  """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+  """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+  """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
   METHOD if_apj_rt_exec_object~execute.
     me->create_checkpoint( ).
     me->read_logout_checkpoint(  ).
   ENDMETHOD.
 
-
+  """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+  """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+  """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
   METHOD create_checkpoint.
     SELECT SINGLE *
     FROM tvarvc
@@ -109,7 +114,9 @@ CLASS ZCL_UAM_LOGOUT_LOG_RESULT IMPLEMENTATION.
     ENDIF.
   ENDMETHOD.
 
-
+  """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+  """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+  """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
   METHOD read_logout_checkpoint.
     DATA: lv_date TYPE dats,
           lv_time TYPE tims.
@@ -150,7 +157,9 @@ CLASS ZCL_UAM_LOGOUT_LOG_RESULT IMPLEMENTATION.
     me->read_logout(  ).
   ENDMETHOD.
 
-
+  """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+  """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+  """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
   METHOD read_logout.
     SELECT slguser   AS username
            slgdattim AS time
@@ -175,7 +184,9 @@ CLASS ZCL_UAM_LOGOUT_LOG_RESULT IMPLEMENTATION.
     me->update_checkpoint( ).
   ENDMETHOD.
 
-
+  """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+  """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+  """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
   METHOD update_logout_time.
     DATA: ls_oldest TYPE zuam_auth_log.
 
@@ -195,8 +206,8 @@ CLASS ZCL_UAM_LOGOUT_LOG_RESULT IMPLEMENTATION.
           AND login_time <= @ls_logout-time+8(6)
          )
         )
-      ORDER BY login_date DESCENDING,
-               login_time DESCENDING
+      ORDER BY login_date ASCENDING,
+               login_time ASCENDING
       INTO @ls_oldest
       UP TO 1 ROWS.
       ENDSELECT.
@@ -225,7 +236,9 @@ CLASS ZCL_UAM_LOGOUT_LOG_RESULT IMPLEMENTATION.
     ENDLOOP.
   ENDMETHOD.
 
-
+  """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+  """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+  """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
   METHOD update_checkpoint.
     IF lv_max_time IS NOT INITIAL.
       UPDATE tvarvc

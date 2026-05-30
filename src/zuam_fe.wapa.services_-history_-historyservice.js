@@ -1,0 +1,3 @@
+sap.ui.define(["sap/ui/model/Sorter"],function(t){"use strict";class e{static async loadHistoryPage(e,n=[],s=0,o=10){const i=e.bindList("/admin_history",undefined,[new t("ActionDate",true),new t("ActionTime",true)],n,{$count:true});const r=await i.reques+
+tContexts(s,o);const c=r.map(t=>t.getObject());const u=i.getLength();i.destroy();return{rows:c,count:u}}}return e});                                                                                                                                           
+//# sourceMappingURL=HistoryService.js.map                                                                                                                                                                                                                     

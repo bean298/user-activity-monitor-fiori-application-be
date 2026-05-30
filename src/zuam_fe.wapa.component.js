@@ -1,0 +1,3 @@
+sap.ui.define(["sap/fe/core/AppComponent","sap/ui/model/json/JSONModel"],function(t,e){"use strict";const n=t.extend("useractivitymonitorfioriapplication.Component",{metadata:{manifest:"json"},init:function n(){t.prototype.init.call(this);const o=new Dat+
+e;const a=o.getDay();const i=a===0?-6:1-a;const s=new Date(o);s.setDate(o.getDate()+i);const c=new Date(s);c.setDate(s.getDate()+6);const p=new e({fromDate:s,toDate:c});this.setModel(p,"globalFilterDate")}});return n});                                    
+//# sourceMappingURL=Component.js.map                                                                                                                                                                                                                          

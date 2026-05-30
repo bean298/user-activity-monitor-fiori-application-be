@@ -41,9 +41,15 @@ CLASS zcl_uam_risk_calculator DEFINITION
       IMPORTING iv_act_time TYPE syuzeit
       CHANGING  cs_result   TYPE zuam_risk_result.
 
+        METHODS get_terminal_score          " <-- NEW
+      IMPORTING iv_username      TYPE xubname
+                iv_login_date    TYPE sydatum
+      RETURNING VALUE(rs_result) TYPE zuam_risk_result.
+
     METHODS process_tcode_data.
     METHODS process_dump_data.
     METHODS process_export_data.
+    METHODS process_auth_data.
 
 ENDCLASS.
 
@@ -59,6 +65,7 @@ CLASS zcl_uam_risk_calculator IMPLEMENTATION.
     me->process_tcode_data( ).
     me->process_dump_data( ).
     me->process_export_data( ).
+    me->process_auth_data( ).
   ENDMETHOD.
 
   METHOD load_config.
@@ -115,6 +122,8 @@ CLASS zcl_uam_risk_calculator IMPLEMENTATION.
       ENDIF.
     ENDLOOP.
   ENDMETHOD.
+
+
 
   METHOD get_export_score.
     " Count number of EXPORT records per user per day
@@ -195,6 +204,63 @@ CLASS zcl_uam_risk_calculator IMPLEMENTATION.
             severity   = @ls_result-severity,
             is_scored  = @abap_true
         WHERE act_id = @ls_dump-act_id.  " <-- use ls_dump
+    ENDLOOP.
+
+    COMMIT WORK.
+  ENDMETHOD.
+
+  METHOD get_terminal_score.
+    " Count distinct terminals with successful logins on the given date
+    SELECT COUNT( DISTINCT terminal_id )
+      FROM zuam_auth_log
+      WHERE username     = @iv_username
+        AND login_date   = @iv_login_date
+        AND login_result = 'SUCCESS'            " successful logins only
+      INTO @DATA(lv_count).
+
+    DATA(lv_threshold) = COND zuam_cfg_value(
+      WHEN lv_count >= 3 THEN 'TERMINAL_3+'
+      WHEN lv_count >= 2 THEN 'TERMINAL_2'
+      ELSE '' ).
+
+    IF lv_threshold IS INITIAL. RETURN. ENDIF.
+
+    READ TABLE mt_risk_cfg INTO DATA(ls_cfg)
+      WITH KEY act_type = 'MULTI_TERMIN'
+               value    = lv_threshold.
+    IF sy-subrc = 0.
+      rs_result-score    = ls_cfg-risk_score.
+      rs_result-severity = ls_cfg-severity.
+    ENDIF.
+  ENDMETHOD.
+
+  METHOD process_auth_data.
+    " Get distinct (username, login_date) not yet scored
+    SELECT DISTINCT username, login_date
+      FROM zuam_auth_log
+      WHERE is_scored = @abap_false
+      INTO TABLE @DATA(lt_users).
+
+    LOOP AT lt_users INTO DATA(ls_user).
+      DATA(ls_result) = me->get_terminal_score(
+        iv_username   = ls_user-username
+        iv_login_date = ls_user-login_date ).
+
+      IF ls_result-score > 0.
+        " Update all sessions for this user on the given date
+        UPDATE zuam_auth_log
+          SET risk_score = @ls_result-score,
+              severity   = @ls_result-severity,
+              is_scored  = @abap_true
+          WHERE username   = @ls_user-username
+            AND login_date = @ls_user-login_date.
+      ELSE.
+        " Single terminal only — no risk, but mark as scored
+        UPDATE zuam_auth_log
+          SET is_scored = @abap_true
+          WHERE username   = @ls_user-username
+            AND login_date = @ls_user-login_date.
+      ENDIF.
     ENDLOOP.
 
     COMMIT WORK.

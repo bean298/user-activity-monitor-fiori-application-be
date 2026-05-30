@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_SICF" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <URL>/sap/bc/bsp/sap/zuam_fe/</URL>
+   <ICFSERVICE>
+    <ICF_NAME>ZUAM_FE</ICF_NAME>
+    <ORIG_NAME>zuam_fe</ORIG_NAME>
+   </ICFSERVICE>
+  </asx:values>
+ </asx:abap>
+</abapGit>

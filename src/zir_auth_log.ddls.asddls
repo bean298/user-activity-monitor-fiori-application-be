@@ -27,6 +27,9 @@ define root view entity ZIR_AUTH_LOG
       terminal_id   as TerminalId,
       system_id     as SystemId,
       mail_sent     as MailSent,
+      risk_score    as RiskScore,      
+      severity      as Severity,       
+      is_scored     as IsScored,
       erzet         as CreateAt,
       erdat         as CreateOn,    
       

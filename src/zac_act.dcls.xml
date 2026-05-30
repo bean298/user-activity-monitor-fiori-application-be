@@ -3,9 +3,9 @@
  <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
   <asx:values>
    <DCLS>
-    <DCLNAME>ZAC_USER_ACTIVITY</DCLNAME>
+    <DCLNAME>ZAC_ACT</DCLNAME>
     <DCLLANGUAGE>E</DCLLANGUAGE>
-    <DDTEXT>Access Control User Activityy</DDTEXT>
+    <DDTEXT>Access Control</DDTEXT>
    </DCLS>
   </asx:values>
  </asx:abap>
