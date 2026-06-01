@@ -13,7 +13,8 @@
 define view entity ZI_SYSTEM_INFO
   as select distinct from ZIR_AUTH_LOG
 {
-  key UserClient as userCient
+  key UserClient as userCient,
+      SystemId
 }
 where
       UserClient is not null

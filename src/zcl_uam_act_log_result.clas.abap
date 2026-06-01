@@ -28,7 +28,16 @@ CLASS  zcl_uam_act_log_result DEFINITION
                gc_seqno_hdr   TYPE snap-seqno  VALUE '000',
                gc_tc_sm       TYPE string      VALUE 'SESSION_MANAGER',
                gc_tc_s000     TYPE string      VALUE 'S000',
-               gc_tc_seuint   TYPE string      VALUE 'SEU_INT'.
+               gc_tc_seuint   TYPE string      VALUE 'SEU_INT',
+               gc_area_au     TYPE rsau_buf_data-area  VALUE 'AU',
+               gc_area_bu     TYPE rsau_buf_data-area  VALUE 'BU',
+               gc_area_cu     TYPE rsau_buf_data-area  VALUE 'CU',
+               gc_area_du     TYPE rsau_buf_data-area  VALUE 'DU',
+               gc_subid_2     TYPE rsau_buf_data-subid VALUE '2',
+               gc_subid_3     TYPE rsau_buf_data-subid VALUE '3',
+               gc_subid_4     TYPE rsau_buf_data-subid VALUE '4',
+               gc_subid_a     TYPE rsau_buf_data-subid VALUE 'A'.
+               .
 
     "---------------------------------------------------------------
     " Data
@@ -127,9 +136,9 @@ CLASS zcl_uam_act_log_result IMPLEMENTATION.
      FROM rsau_buf_data
      WHERE slgmand = @sy-mandt
        AND slgdattim > @lv_low
-       AND ( ( area IN ('CU', 'DU') AND subid <> '2')
-          OR ( area = 'BU' AND subid = '4' )
-          OR ( area = 'AU' AND subid IN ('A', '3', '4') ) )
+       AND ( ( area IN (@gc_area_cu, @gc_area_du) AND subid <> @gc_subid_2 )
+          OR ( area = @gc_area_bu AND subid = @gc_subid_4 )
+          OR ( area = @gc_area_au AND subid IN ( @gc_subid_a, @gc_subid_3, @gc_subid_4 ) ) )
        AND slgtc IS NOT INITIAL
      INTO CORRESPONDING FIELDS OF TABLE @lt_sal.
 
@@ -178,7 +187,7 @@ CLASS zcl_uam_act_log_result IMPLEMENTATION.
         IMPORTING
           hash = lv_guid.
 
-      IF ls_sal-area = 'AU' AND ( ls_sal-subid = '3' OR ls_sal-subid = '4' ).
+      IF ls_sal-area = gc_area_au AND ( ls_sal-subid = gc_subid_3 OR ls_sal-subid = gc_subid_4 ).
         ls_log-tcode          = ls_sal-sal_data.
       ELSE.
         ls_log-tcode          = ls_sal-slgtc.
@@ -200,9 +209,9 @@ CLASS zcl_uam_act_log_result IMPLEMENTATION.
       ls_log-act_date       = lv_act_date.
       ls_log-act_type       = gc_act_tcode.
       ls_log-message_text   = zcl_uam_act_msg_parser=>parse_audit_message( im_area     = ls_sal-area
-                                                                im_subid    = ls_sal-subid
-                                                                im_sal_data = ls_sal-sal_data
-                                                               ).
+                                                                           im_subid    = ls_sal-subid
+                                                                           im_sal_data = ls_sal-sal_data
+                                                                         ).
 
       IF ls_log-message_text CS '====CM' OR
          ls_log-message_text CS '====CC' OR

@@ -15,15 +15,35 @@ CLASS zcl_uam_risk_calculator DEFINITION
       END OF ty_risk_cfg,
       tt_risk_cfg TYPE STANDARD TABLE OF ty_risk_cfg WITH DEFAULT KEY.
 
+    CONSTANTS:
+      " Activity types
+      mc_act_dump         TYPE zuam_act_type  VALUE 'DUMP',
+      mc_act_export       TYPE zuam_act_type  VALUE 'EXPORT',
+      mc_act_multi_term   TYPE zuam_act_type  VALUE 'MULTI_TERMIN',
+
+      " Config value keys
+      mc_val_wildcard     TYPE zuam_cfg_value VALUE '*',
+      mc_val_terminal_2   TYPE zuam_cfg_value VALUE 'TERMINAL_2',
+      mc_val_terminal_3   TYPE zuam_cfg_value VALUE 'TERMINAL_3+',
+      mc_val_threshold_5  TYPE zuam_cfg_value VALUE 'THRESHOLD_5',
+      mc_val_threshold_10 TYPE zuam_cfg_value VALUE 'THRESHOLD_10',
+      mc_val_threshold_20 TYPE zuam_cfg_value VALUE 'THRESHOLD_20',
+
+      " Login result
+      mc_login_success    TYPE string         VALUE 'SUCCESS',
+
+      " Export daily thresholds
+      mc_export_thresh_5  TYPE i              VALUE 5,
+      mc_export_thresh_10 TYPE i              VALUE 10,
+      mc_export_thresh_20 TYPE i              VALUE 20,
+
+      " Terminal thresholds
+      mc_terminal_min_2   TYPE i              VALUE 2,
+      mc_terminal_min_3   TYPE i              VALUE 3.
+
     DATA mt_risk_cfg TYPE tt_risk_cfg.
 
     METHODS load_config.
-
-    " Calculate TCode score (exact match → wildcard)
-    METHODS get_tcode_score
-      IMPORTING iv_tcode         TYPE tcode
-                iv_act_type      TYPE zuam_act_type DEFAULT 'TCODE'
-      RETURNING VALUE(rs_result) TYPE zuam_risk_result.
 
     " Calculate Dump score (CS pattern matching)
     METHODS get_dump_score
@@ -36,17 +56,11 @@ CLASS zcl_uam_risk_calculator DEFINITION
                 iv_date          TYPE sydatum
       RETURNING VALUE(rs_result) TYPE zuam_risk_result.
 
-    " Off-hours multiplier × 1.5
-    METHODS apply_offhours_multiplier
-      IMPORTING iv_act_time TYPE syuzeit
-      CHANGING  cs_result   TYPE zuam_risk_result.
-
-        METHODS get_terminal_score          " <-- NEW
+    METHODS get_terminal_score
       IMPORTING iv_username      TYPE xubname
                 iv_login_date    TYPE sydatum
       RETURNING VALUE(rs_result) TYPE zuam_risk_result.
 
-    METHODS process_tcode_data.
     METHODS process_dump_data.
     METHODS process_export_data.
     METHODS process_auth_data.
@@ -56,13 +70,11 @@ ENDCLASS.
 
 CLASS zcl_uam_risk_calculator IMPLEMENTATION.
 
-
   METHOD if_apj_dt_exec_object~get_parameters.
   ENDMETHOD.
 
   METHOD if_apj_rt_exec_object~execute.
     me->load_config( ).
-    me->process_tcode_data( ).
     me->process_dump_data( ).
     me->process_export_data( ).
     me->process_auth_data( ).
@@ -76,39 +88,11 @@ CLASS zcl_uam_risk_calculator IMPLEMENTATION.
       INTO TABLE @mt_risk_cfg.
   ENDMETHOD.
 
-  METHOD apply_offhours_multiplier.
-    IF iv_act_time < '080000' OR iv_act_time > '170000'.
-      cs_result-score = cs_result-score * 15 / 10.
-    ENDIF.
-  ENDMETHOD.
-
-  METHOD get_tcode_score.
-    " Exact match
-    READ TABLE mt_risk_cfg INTO DATA(ls_exact)
-      WITH KEY act_type = iv_act_type
-               value    = CONV zuam_cfg_value( iv_tcode ).
-    IF sy-subrc = 0.
-      rs_result-score    = ls_exact-risk_score.
-      rs_result-severity = ls_exact-severity.
-      RETURN.
-    ENDIF.
-
-    " Wildcard fallback (*)
-    READ TABLE mt_risk_cfg INTO DATA(ls_wild)
-      WITH KEY act_type = iv_act_type
-               value    = '*'.
-    IF sy-subrc = 0.
-      rs_result-score    = ls_wild-risk_score.
-      rs_result-severity = ls_wild-severity.
-    ENDIF.
-  ENDMETHOD.
-
   METHOD get_dump_score.
-
     LOOP AT mt_risk_cfg INTO DATA(ls_cfg)
-      WHERE act_type = 'DUMP'.
+      WHERE act_type = mc_act_dump.
 
-      IF ls_cfg-value = '*'.
+      IF ls_cfg-value = mc_val_wildcard.
         " Fallback — no pattern matched yet
         rs_result-score    = ls_cfg-risk_score.
         rs_result-severity = ls_cfg-severity.
@@ -123,28 +107,26 @@ CLASS zcl_uam_risk_calculator IMPLEMENTATION.
     ENDLOOP.
   ENDMETHOD.
 
-
-
   METHOD get_export_score.
     " Count number of EXPORT records per user per day
     SELECT COUNT(*)
       FROM zuam_act_log
       WHERE username = @iv_username
         AND act_date  = @iv_date
-        AND act_type  = 'EXPORT'
+        AND act_type  = @mc_act_export
       INTO @DATA(lv_count).
 
     " Determine threshold (highest first)
     DATA(lv_threshold) = COND zuam_cfg_value(
-      WHEN lv_count >= 20 THEN 'THRESHOLD_20'
-      WHEN lv_count >= 10 THEN 'THRESHOLD_10'
-      WHEN lv_count >= 5  THEN 'THRESHOLD_5'
+      WHEN lv_count >= mc_export_thresh_20 THEN mc_val_threshold_20
+      WHEN lv_count >= mc_export_thresh_10 THEN mc_val_threshold_10
+      WHEN lv_count >= mc_export_thresh_5  THEN mc_val_threshold_5
       ELSE '' ).
 
     IF lv_threshold IS INITIAL. RETURN. ENDIF.
 
     READ TABLE mt_risk_cfg INTO DATA(ls_cfg)
-      WITH KEY act_type = 'EXPORT'
+      WITH KEY act_type = mc_act_export
                value    = lv_threshold.
     IF sy-subrc = 0.
       rs_result-score    = ls_cfg-risk_score.
@@ -152,39 +134,10 @@ CLASS zcl_uam_risk_calculator IMPLEMENTATION.
     ENDIF.
   ENDMETHOD.
 
-  METHOD process_tcode_data.
-    SELECT act_id, username, act_type, tcode, act_tims
-      FROM zuam_act_log
-      WHERE act_type  IN ('TCODE', 'TABLE_EDIT')
-        AND is_scored = @abap_false
-      INTO TABLE @DATA(lt_act).
-
-    LOOP AT lt_act INTO DATA(ls_act).
-      DATA(ls_result) = me->get_tcode_score(
-        iv_tcode    = ls_act-tcode
-        iv_act_type = ls_act-act_type ).
-
-      " TABLE_EDIT is always critical → no off-hours multiplier needed
-      IF ls_act-act_type = 'TCODE'.
-        me->apply_offhours_multiplier(
-          EXPORTING iv_act_time = ls_act-act_tims
-          CHANGING  cs_result   = ls_result ).
-      ENDIF.
-
-      UPDATE zuam_act_log
-        SET risk_score = @ls_result-score,
-            severity   = @ls_result-severity,
-            is_scored  = @abap_true
-        WHERE act_id = @ls_act-act_id.
-    ENDLOOP.
-
-    COMMIT WORK.
-  ENDMETHOD.
-
   METHOD process_dump_data.
     SELECT act_id, username, message_text, act_tims
       FROM zuam_act_log
-      WHERE act_type  = 'DUMP'
+      WHERE act_type  = @mc_act_dump
         AND is_scored = @abap_false
       INTO TABLE @DATA(lt_dump).
 
@@ -192,18 +145,11 @@ CLASS zcl_uam_risk_calculator IMPLEMENTATION.
       DATA(ls_result) = me->get_dump_score(
         iv_message = ls_dump-message_text ).
 
-      " Apply off-hours multiplier only if score < 100
-      IF ls_result-score < 100.
-        me->apply_offhours_multiplier(
-          EXPORTING iv_act_time = ls_dump-act_tims
-          CHANGING  cs_result   = ls_result ).
-      ENDIF.
-
       UPDATE zuam_act_log
         SET risk_score = @ls_result-score,
             severity   = @ls_result-severity,
             is_scored  = @abap_true
-        WHERE act_id = @ls_dump-act_id.  " <-- use ls_dump
+        WHERE act_id = @ls_dump-act_id.
     ENDLOOP.
 
     COMMIT WORK.
@@ -215,18 +161,18 @@ CLASS zcl_uam_risk_calculator IMPLEMENTATION.
       FROM zuam_auth_log
       WHERE username     = @iv_username
         AND login_date   = @iv_login_date
-        AND login_result = 'SUCCESS'            " successful logins only
+        AND login_result = @mc_login_success            " successful logins only
       INTO @DATA(lv_count).
 
     DATA(lv_threshold) = COND zuam_cfg_value(
-      WHEN lv_count >= 3 THEN 'TERMINAL_3+'
-      WHEN lv_count >= 2 THEN 'TERMINAL_2'
+      WHEN lv_count >= mc_terminal_min_3 THEN mc_val_terminal_3
+      WHEN lv_count >= mc_terminal_min_2 THEN mc_val_terminal_2
       ELSE '' ).
 
     IF lv_threshold IS INITIAL. RETURN. ENDIF.
 
     READ TABLE mt_risk_cfg INTO DATA(ls_cfg)
-      WITH KEY act_type = 'MULTI_TERMIN'
+      WITH KEY act_type = mc_act_multi_term
                value    = lv_threshold.
     IF sy-subrc = 0.
       rs_result-score    = ls_cfg-risk_score.
@@ -270,7 +216,7 @@ CLASS zcl_uam_risk_calculator IMPLEMENTATION.
     " Get distinct (username, date) not yet scored
     SELECT DISTINCT username, act_date
       FROM zuam_act_log
-      WHERE act_type  = 'EXPORT'
+      WHERE act_type  = @mc_act_export
         AND is_scored = @abap_false
       INTO TABLE @DATA(lt_users).
 
@@ -287,14 +233,14 @@ CLASS zcl_uam_risk_calculator IMPLEMENTATION.
               is_scored  = @abap_true
           WHERE username = @ls_user-username
             AND act_date  = @ls_user-act_date
-            AND act_type  = 'EXPORT'.
+            AND act_type  = @mc_act_export.
       ELSE.
         " Below threshold → mark as scored but score = 0
         UPDATE zuam_act_log
           SET is_scored = @abap_true
           WHERE username = @ls_user-username
             AND act_date  = @ls_user-act_date
-            AND act_type  = 'EXPORT'.
+            AND act_type  = @mc_act_export.
       ENDIF.
     ENDLOOP.
 

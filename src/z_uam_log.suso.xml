@@ -22,7 +22,19 @@
    <TACTZ>
     <TACTZ>
      <BROBJ>Z_UAM_LOG</BROBJ>
+     <ACTVT>01</ACTVT>
+    </TACTZ>
+    <TACTZ>
+     <BROBJ>Z_UAM_LOG</BROBJ>
+     <ACTVT>02</ACTVT>
+    </TACTZ>
+    <TACTZ>
+     <BROBJ>Z_UAM_LOG</BROBJ>
      <ACTVT>03</ACTVT>
+    </TACTZ>
+    <TACTZ>
+     <BROBJ>Z_UAM_LOG</BROBJ>
+     <ACTVT>16</ACTVT>
     </TACTZ>
    </TACTZ>
   </asx:values>

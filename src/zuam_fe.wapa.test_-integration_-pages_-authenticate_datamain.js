@@ -1,2 +1,0 @@
-sap.ui.define(["sap/fe/test/TemplatePage"],function(t){"use strict";var a={actions:{},assertions:{}};return new t("useractivitymonitorfioriapplication::authenticate_dataMain",a)});                                                                           
-//# sourceMappingURL=authenticate_dataMain.js.map                                                                                                                                                                                                              

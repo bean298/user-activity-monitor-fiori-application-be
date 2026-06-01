@@ -102,6 +102,7 @@ CLASS zcl_uam_auth_log_result IMPLEMENTATION.
 
 
   METHOD if_apj_rt_exec_object~execute.
+
     lt_var = VALUE #(
       (
         name        = lc_cp_login_fail

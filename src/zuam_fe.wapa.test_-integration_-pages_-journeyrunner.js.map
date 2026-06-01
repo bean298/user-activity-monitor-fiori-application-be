@@ -1,2 +1,0 @@
-{"version":3,"file":"JourneyRunner.js","names":["sap","ui","define","JourneyRunner","authenticate_dataMain","runner","launchUrl","require","toUrl","pages","onTheauthenticate_dataMain","async"],"sources":["JourneyRunner-dbg.js"],"mappings":"AAAAA,IAAIC,GA+
-AGC,OAAO,CACV,4BACH,oFACE,SAAUC,EAAeC,GACxB,aAEA,IAAIC,EAAS,IAAIF,EAAc,CAC3BG,UAAWN,IAAIC,GAAGM,QAAQC,MAAM,uCAAyC,6BACzEC,MAAO,CACZC,2BAA4BN,GAEvBO,MAAO,OAGX,OAAON,CACX","ignoreList":[]}                                                                     

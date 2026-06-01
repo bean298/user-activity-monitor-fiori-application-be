@@ -1,3 +1,0 @@
-sap.ui.define(["sap/fe/test/JourneyRunner","useractivitymonitorfioriapplication/test/integration/pages/authenticate_dataMain"],function(t,i){"use strict";var a=new t({launchUrl:sap.ui.require.toUrl("useractivitymonitorfioriapplication")+"/test/flp.html#a+
-pp-preview",pages:{onTheauthenticate_dataMain:i},async:true});return a});                                                                                                                                                                                      
-//# sourceMappingURL=JourneyRunner.js.map                                                                                                                                                                                                                      

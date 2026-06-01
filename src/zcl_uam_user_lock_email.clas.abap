@@ -1,4 +1,3 @@
-
 CLASS zcl_uam_user_lock_email DEFINITION
   PUBLIC
   FINAL
@@ -11,6 +10,15 @@ CLASS zcl_uam_user_lock_email DEFINITION
   PROTECTED SECTION.
 
   PRIVATE SECTION.
+    CONSTANTS:
+      mc_param_email   TYPE string     VALUE 'P_EMAIL',
+      mc_param_label   TYPE string     VALUE 'Admin Email',
+      mc_doc_type      TYPE so_obj_tp  VALUE 'HTM',
+      mc_mail_sent     TYPE char1      VALUE 'X',
+      mc_event_id      TYPE char4      VALUE 'AUM',
+      mc_subject_admin TYPE so_obj_des VALUE 'User Lock Report',
+      mc_subject_user  TYPE so_obj_des VALUE 'SAP Account Locked Notification'.
+
     DATA: mt_auth_log    TYPE STANDARD TABLE OF zuam_auth_log,
           ms_auth_log    TYPE zuam_auth_log,
           mv_user_count  TYPE i,
@@ -34,13 +42,14 @@ CLASS zcl_uam_user_lock_email IMPLEMENTATION.
   METHOD if_apj_dt_exec_object~get_parameters.
     "--- Define admin email parameter for Application Job Catalog ---"
     et_parameter_def = VALUE #(
-      ( selname        = 'P_EMAIL'
+      ( selname        = mc_param_email
         kind           = 'P'
         datatype       = 'C'
         length         = 241
         component_type = 'AD_SMTPADR'
         mandatory_ind  = abap_true
-        changeable_ind = abap_true )
+        changeable_ind = abap_true
+        param_text     = mc_param_label )
     ).
   ENDMETHOD.
 
@@ -48,7 +57,7 @@ CLASS zcl_uam_user_lock_email IMPLEMENTATION.
   METHOD if_apj_rt_exec_object~execute.
     "--- Read admin email from job parameters ---"
     READ TABLE it_parameters
-      WITH KEY selname = 'P_EMAIL'
+      WITH KEY selname = mc_param_email
       INTO DATA(ls_param).
     IF sy-subrc = 0.
       mv_admin_email = ls_param-low.
@@ -75,7 +84,7 @@ CLASS zcl_uam_user_lock_email IMPLEMENTATION.
            erzet,
            mail_sent
       FROM zuam_auth_log
-      WHERE event_id  = 'AUM'
+      WHERE event_id  = @mc_event_id
         AND mail_sent = ''
       INTO CORRESPONDING FIELDS OF TABLE @mt_auth_log.
 
@@ -164,9 +173,9 @@ CLASS zcl_uam_user_lock_email IMPLEMENTATION.
 
         "--- Create document ---"
         lo_document = cl_document_bcs=>create_document(
-                        i_type    = 'HTM'
+                        i_type    = mc_doc_type
                         i_text    = lt_html
-                        i_subject = TEXT-001
+                        i_subject = mc_subject_admin
                       ).
 
         "--- Create send request ---"
@@ -185,7 +194,7 @@ CLASS zcl_uam_user_lock_email IMPLEMENTATION.
         IF lv_sent = abap_true.
           LOOP AT mt_auth_log INTO ms_auth_log.
             UPDATE zuam_auth_log
-              SET mail_sent = 'X'
+              SET mail_sent = @mc_mail_sent
               WHERE session_id = @ms_auth_log-session_id.
           ENDLOOP.
 
@@ -205,7 +214,7 @@ CLASS zcl_uam_user_lock_email IMPLEMENTATION.
   ENDMETHOD.
 
 
-    METHOD sent_user_mail.
+  METHOD sent_user_mail.
     "--- Send individual lock notification to each locked user ---"
     DATA: lo_bcs       TYPE REF TO cl_bcs,
           lo_document  TYPE REF TO cl_document_bcs,
@@ -258,9 +267,9 @@ CLASS zcl_uam_user_lock_email IMPLEMENTATION.
               ftext_tab = lt_html.
 
           lo_document = cl_document_bcs=>create_document(
-                          i_type    = 'HTM'
+                          i_type    = mc_doc_type
                           i_text    = lt_html
-                          i_subject = TEXT-002
+                          i_subject = mc_subject_user
                         ).
 
           lo_bcs = cl_bcs=>create_persistent( ).
@@ -286,4 +295,3 @@ CLASS zcl_uam_user_lock_email IMPLEMENTATION.
   ENDMETHOD.
 
 ENDCLASS.
-

@@ -16,6 +16,14 @@ CLASS zcl_uam_risk_alert_email DEFINITION
              lock_status      TYPE char3,
            END OF ty_critical_user.
 
+    CONSTANTS:
+      mc_param_email        TYPE string     VALUE 'P_EMAIL',
+      mc_param_label        TYPE string     VALUE 'Admin Email',
+      mc_doc_type            TYPE so_obj_tp VALUE 'HTM',
+      mc_mail_sent          TYPE char1      VALUE 'X',
+      mc_critical_threshold TYPE i          VALUE 100,
+      mc_subject            TYPE so_obj_des VALUE 'CRITICAL Risk Level Alert - SAP UAM'.
+
     DATA: mt_critical_users TYPE STANDARD TABLE OF ty_critical_user,
           mv_admin_email    TYPE ad_smtpadr.
 
@@ -29,20 +37,21 @@ CLASS zcl_uam_risk_alert_email IMPLEMENTATION.
 
   METHOD if_apj_dt_exec_object~get_parameters.
     et_parameter_def = VALUE #(
-      ( selname        = 'P_EMAIL'
+      ( selname        = mc_param_email
         kind           = 'P'
         datatype       = 'C'
         length         = 241
         component_type = 'AD_SMTPADR'
         mandatory_ind  = abap_true
-        changeable_ind = abap_true )
+        changeable_ind = abap_true
+        param_text     = mc_param_label )
     ).
   ENDMETHOD.
 
 
   METHOD if_apj_rt_exec_object~execute.
     READ TABLE it_parameters
-      WITH KEY selname = 'P_EMAIL'
+      WITH KEY selname = mc_param_email
       INTO DATA(ls_param).
     IF sy-subrc = 0.
       mv_admin_email = ls_param-low.
@@ -69,10 +78,10 @@ CLASS zcl_uam_risk_alert_email IMPLEMENTATION.
         AND NOT EXISTS (
           SELECT mandt FROM zuam_risk_alt
            WHERE username  = act~username
-             AND mail_sent = 'X'
+             AND mail_sent = @mc_mail_sent
         )
       GROUP BY act~username, usr02~uflag
-      HAVING SUM( act~risk_score ) >= 100
+      HAVING SUM( act~risk_score ) >= @mc_critical_threshold
       ORDER BY SUM( act~risk_score ) DESCENDING
       INTO CORRESPONDING FIELDS OF TABLE @mt_critical_users.
 
@@ -144,9 +153,9 @@ CLASS zcl_uam_risk_alert_email IMPLEMENTATION.
           TABLES     ftext_tab = lt_html.
 
         lo_document = cl_document_bcs=>create_document(
-                        i_type    = 'HTM'
+                        i_type    = mc_doc_type
                         i_text    = lt_html
-                        i_subject = TEXT-001 ).
+                        i_subject = mc_subject ).
 
         lo_bcs = cl_bcs=>create_persistent( ).
         lo_bcs->set_document( lo_document ).
@@ -165,7 +174,7 @@ CLASS zcl_uam_risk_alert_email IMPLEMENTATION.
             UPDATE zuam_risk_alt
               SET alert_date = @sy-datum,
                   risk_score = @ls_user-total_risk_score,
-                  mail_sent  = 'X'
+                  mail_sent  = @mc_mail_sent
               WHERE username = @ls_user-username.
 
             IF sy-subrc <> 0.
@@ -175,7 +184,7 @@ CLASS zcl_uam_risk_alert_email IMPLEMENTATION.
                   username   = ls_user-username
                   alert_date = sy-datum
                   risk_score = ls_user-total_risk_score
-                  mail_sent  = 'X'
+                  mail_sent  = mc_mail_sent
                 )
               ).
             ENDIF.
